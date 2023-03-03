@@ -14,7 +14,7 @@ app.get("/api/v1/tours", (req, res) => {
   res.status(200).json({
     status: "success",
     resultCount: tours.length,
-    data: tours,
+    data: { tours },
   });
 });
 
@@ -25,19 +25,20 @@ app.get("/api/v1/tours/:id", (req, res) => {
   const id = req.params.id * 1;
   const tour = tours.find((element) => element.id === id);
 
-  //   if we use curly brackets then we have to write return keyword
-  //   const tour = tours.find((element) => {
-  //     return element.id === id;
-  //   });
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour,
-    },
-  });
+  //if (id > tours.length) {
+  if (!tour) {
+    res.status(404).json({ status: "fail", message: "Invalid ID" });
+  } else {
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    });
+  }
 });
 
+//creating tour apis
 app.post("/api/v1/tours", (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
@@ -54,6 +55,24 @@ app.post("/api/v1/tours", (req, res) => {
       });
     }
   );
+});
+
+//updating data
+app.patch("/api/v1/tours/:id", (req, res) => {
+  if (req.params.id * 1 >= tours.length) {
+    res.status(404).json({ status: "fail", message: "Invalid ID" });
+  } else {
+    res.status(200).json({ status: "success", message: "Updated" });
+  }
+});
+
+//deleting the data
+app.delete("/api/v1/tours/:id", (req, res) => {
+  if (req.params.id * 1 >= tours.length) {
+    res.status(404).json({ status: "fail", message: "Invalid ID" });
+  } else {
+    res.status(200).json({ status: "Delete success", data: null });
+  }
 });
 
 app.listen(3000, () => {
