@@ -9,16 +9,15 @@ const tours = JSON.parse(
 );
 // console.log(tours);
 
-//We are getting total number of tours details
-app.get("/api/v1/tours", (req, res) => {
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: "success",
     resultCount: tours.length,
     data: { tours },
   });
-});
+};
 
-app.get("/api/v1/tours/:id", (req, res) => {
+const getToursById = (req, res) => {
   console.log(req.params);
 
   //converting to string nunmbers to Int(number)
@@ -36,10 +35,9 @@ app.get("/api/v1/tours/:id", (req, res) => {
       },
     });
   }
-});
+};
 
-//creating tour apis
-app.post("/api/v1/tours", (req, res) => {
+const CreateNewTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
@@ -55,25 +53,38 @@ app.post("/api/v1/tours", (req, res) => {
       });
     }
   );
-});
+};
 
-//updating data
-app.patch("/api/v1/tours/:id", (req, res) => {
+const updateTour = (req, res) => {
   if (req.params.id * 1 >= tours.length) {
     res.status(404).json({ status: "fail", message: "Invalid ID" });
   } else {
     res.status(200).json({ status: "success", message: "Updated" });
   }
-});
+};
 
-//deleting the data
-app.delete("/api/v1/tours/:id", (req, res) => {
+const deletTourById = (req, res) => {
   if (req.params.id * 1 >= tours.length) {
     res.status(404).json({ status: "fail", message: "Invalid ID" });
   } else {
     res.status(200).json({ status: "Delete success", data: null });
   }
-});
+};
+
+//We are getting total number of tours details
+app.get("/api/v1/tours", getAllTours);
+
+//Getting tour by id
+app.get("/api/v1/tours/:id", getToursById);
+
+//creating tour apis
+app.post("/api/v1/tours", CreateNewTour);
+
+//updating data
+app.patch("/api/v1/tours/:id", updateTour);
+
+//deleting the data
+app.delete("/api/v1/tours/:id", deletTourById);
 
 app.listen(3000, () => {
   console.log("Server Started");
