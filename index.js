@@ -1,7 +1,9 @@
 const express = require("express");
 const fs = require("fs");
+const morgan = require("morgan");
 const app = express();
 
+// 1) MIDDLEWARES
 //We are using express.json() method to parse incoming request with JSON Payload.
 app.use(express.json());
 
@@ -17,6 +19,10 @@ app.use((req, res, next) => {
   next();
 });
 
+//This is third party miidleware to log.
+app.use(morgan("dev"));
+
+// 2) ROUTE HANDLER
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/Dev-data/tour-simple.json`)
 );
@@ -85,6 +91,7 @@ const deletTourById = (req, res) => {
   }
 };
 
+// 3) ROUTES
 //We are getting total number of tours details
 app.get("/api/v1/tours", getAllTours);
 
@@ -100,6 +107,7 @@ app.patch("/api/v1/tours/:id", updateTour);
 //deleting the data
 app.delete("/api/v1/tours/:id", deletTourById);
 
+// 4) SERVER
 app.listen(3000, () => {
   console.log("Server Started");
 });
