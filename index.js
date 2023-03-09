@@ -2,7 +2,20 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 
+//We are using express.json() method to parse incoming request with JSON Payload.
 app.use(express.json());
+
+//Here we are creating our own middleware
+app.use((req, res, next) => {
+  console.log("Hello From Middleware");
+  next();
+});
+
+//Here we are creating middleware to get the time when request is initiated.
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/Dev-data/tour-simple.json`)
@@ -12,6 +25,7 @@ const tours = JSON.parse(
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: "success",
+    requestedAt: req.requestTime,
     resultCount: tours.length,
     data: { tours },
   });
