@@ -1,56 +1,38 @@
 const Tour = require("../Model/tourModel");
 
-// const tours = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../Dev-data/tour-simple.json`)
-// );
-
-//This is middleware that created to check whether requested tour id is valid or not..
-// exports.checkID = (req, res, next, val) => {
-//   console.log(`Tour id is ${val}`);
-//   if (req.params.id * 1 >= tours.length) {
-//     return res.status(404).json({ status: "fail", message: "Invalid ID" });
-//   }
-//   next();
-// };
-
-// exports.checkBody = (req, res, next) => {
-//   // console.log(`body is ${val}`);
-//   console.log(req.body.name, req.body.price);
-//   if (!req.body.name || !req.body.price) {
-//     return res
-//       .status(404)
-//       .json({ status: "fail", message: "Please enter correct name and price" });
-//   }
-//   next();
-// };
-
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    requestedAt: req.requestTime,
-    // resultCount: tours.length,
-    // data: { tours },
-  });
+exports.getAllTours = async (req, res) => {
+  try {
+    const allTour = await Tour.find();
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      resultCount: allTour.length,
+      data: { allTour },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
 };
 
-exports.getToursById = (req, res) => {
+exports.getToursById = async (req, res) => {
   console.log(req.params);
 
-  //converting to string nunmbers to Int(number)
-  // const id = req.params.id * 1;
-  // const tour = tours.find((element) => element.id === id);
-
-  // //if (id > tours.length) {
-  // if (!tour) {
-  //   res.status(404).json({ status: "fail", message: "Invalid ID" });
-  // } else {
-  //   res.status(200).json({
-  //     status: "success",
-  //     data: {
-  //       tour,
-  //     },
-  //   });
-  // }
+  try {
+    const tour = await Tour.findById(req.params.id);
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: { tour },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
 };
 
 exports.CreateNewTour = async (req, res) => {
@@ -70,10 +52,38 @@ exports.CreateNewTour = async (req, res) => {
   }
 };
 
-exports.updateTour = (req, res) => {
-  res.status(200).json({ status: "success", message: "Updated" });
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: "Invalid data sent",
+    });
+  }
 };
 
-exports.deletTourById = (req, res) => {
-  res.status(200).json({ status: "Delete success", data: null });
+exports.deletTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndDelete(req.params.id);
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: "Invalid data sent",
+    });
+  }
 };
