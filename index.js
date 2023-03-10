@@ -24,7 +24,10 @@ app.use((req, res, next) => {
 
 //This is third party miidleware to log.
 //This routes apply over every request
-app.use(morgan("dev"));
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 //ROUTES
 //This middleware only apply to the tour and user routes
