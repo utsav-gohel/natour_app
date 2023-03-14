@@ -1,5 +1,12 @@
 const Tour = require("../Model/tourModel");
 
+exports.aliasTopTours = async (req, res, next) => {
+  (req.query.limit = "5"),
+    (req.query.sort = "-ratingAverage,price"),
+    (req.query.fields = "name,price,ratingAverage,summary,difficulty");
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     //Build query
@@ -25,6 +32,23 @@ exports.getAllTours = async (req, res) => {
     }
 
     // 3)Field limiting  //by this user will select which field want to show in response
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v"); //This will remove (__v) field only and show other field
+    }
+
+    //Pagination
+    const page = req.query.page * 1 || 1; //here we are converting values to number
+    const limit = req.query.limit * 1 || 1000;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip > numTours) throw new Error("This page not exist");
+    }
 
     //Execute query
     const tours = await query;
