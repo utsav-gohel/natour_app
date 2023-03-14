@@ -7,6 +7,12 @@ const router = express.Router();
 //This is local middleware we can say as it only perform for only tour routes and not works for user routes.
 // router.param("id", tourController.checkID);
 
+router.get(
+  "/top-5-cheap",
+  tourController.aliasTopTours,
+  tourController.getAllTours
+);
+
 //We are getting total number of tours details
 router.get("/", tourController.getAllTours);
 
