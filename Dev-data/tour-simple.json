@@ -133,11 +133,5 @@
     "imageCover": "tour-9-cover.jpg",
     "images": ["tour-9-1.jpg", "tour-9-2.jpg", "tour-9-3.jpg"],
     "startDates": ["2021-12-16,10:00", "2022-01-16,10:00", "2022-12-12,10:00"]
-  },
-  { "id": 9, "name": "utsav", "duration": 10, "price": 100 },
-  { "id": 10, "name": "utsav1", "duration": 5, "price": 1000 },
-  { "id": 11, "name": "utsav2", "duration": 15, "price": 1000 },
-  { "id": 12, "name": "utsav3", "duration": 15, "price": 1000 },
-  { "id": 13, "name": "utsav4", "duration": 15, "price": 1000 },
-  { "id": 14, "name": "utsav4", "duration": 15, "price": 1000 }
+  }
 ]
